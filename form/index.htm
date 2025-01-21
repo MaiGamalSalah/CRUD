@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>form</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+
+    <div class="container my-5">
+        <div class="form-group">
+            <label for="price">NAMEPRODUCT:</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+            <label for="price">Price:</label>
+            <input type="number" class="form-control" id="price" name="price" required>
+            <label for="name">Description:</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+        </div>
+        <button id="addbtn" class="btn btn-primary">Add</button>
+    </div>
+    <div class="container mt-4">
+        <div class="h-100 w-100">
+            <input type="text" class="form-control" onkeyup="search(this.value)" placeholder="Search...">
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody-result">
+            </tbody>
+        </table>
+    </div>
+    
+
+    <script src="frm.js"></script>    
+</body>
+</html>
