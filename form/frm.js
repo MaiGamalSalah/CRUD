@@ -6,9 +6,12 @@ var addbtn = document.getElementById("addbtn");
 var currentIndex = null;
 var products;
 
-var RegexName = /^[A-Z][a-zA-Z]{3,}$/; 
-var RegexPrice = /^[0-9]+(\.[0-9]{1,2})?$/; 
-var RegexDescription = /^.{10,}$/; 
+// Validation Messages
+var validationRules = {
+    name: { regex: /^[A-Z][a-zA-Z]{3,}$/, message: "Name must start with a capital letter and have at least 4 characters." },
+    price: { regex: /^[0-9]+(\.[0-9]{1,2})?$/, message: "Price must be a valid number (e.g., 100 or 100.50)." },
+    description: { regex: /^.{10,}$/, message: "Description must be at least 10 characters long." }
+};
 
 if (localStorage.getItem("products")) {
     products = JSON.parse(localStorage.getItem("products"));
@@ -29,15 +32,10 @@ addbtn.addEventListener("click", function () {
 });
 
 // Add event listeners for real-time validation
-nameInput.addEventListener("keyup", function () {
-    validateField(nameInput, RegexName, "Name must start with a capital letter and have at least 4 characters.");
-});
-priceInput.addEventListener("keyup", function () {
-    validateField(priceInput, RegexPrice, "Price must be a valid number (e.g., 100 or 100.50).");
-});
-descriptionInput.addEventListener("keyup", function () {
-    validateField(descriptionInput, RegexDescription, "Description must be at least 10 characters long.");
-});
+nameInput.addEventListener("keyup", () => validateField(nameInput, validationRules.name));
+priceInput.addEventListener("keyup", () => validateField(priceInput, validationRules.price));
+descriptionInput.addEventListener("keyup", () => validateField(descriptionInput, validationRules.description));
+
 
 // Add new product
 function addProduct() {
@@ -127,48 +125,27 @@ function setLocalStorage() {
 }
 
 // Validate all inputs
+// Validate all inputs
 function validateInputs() {
-    var isValid = true;
-    if (!validateField(nameInput, RegexName, "Name must start with a capital letter and have at least 4 characters.")) {
-        isValid = false;
-    }
-    if (!validateField(priceInput, RegexPrice, "Price must be a valid number (e.g., 100 or 100.50).")) {
-        isValid = false;
-    }
-    if (!validateField(descriptionInput, RegexDescription, "Description must be at least 10 characters long.")) {
-        isValid = false;
-    }
-    return isValid;
+    let isValid = true;
+    isValid &= validateField(nameInput, validationRules.name);
+    isValid &= validateField(priceInput, validationRules.price);
+    isValid &= validateField(descriptionInput, validationRules.description);
+    return Boolean(isValid);
 }
 
-// Validate a single field
-function validateField(input, regex, errorMessage) {
-    if (!regex.test(input.value)) {
-        showValidationError(input, errorMessage);
+// Validate a single field (combined logic)
+function validateField(input, rule) {
+    if (!rule.regex.test(input.value)) {
+        input.classList.add("is-invalid");
+        input.classList.remove("is-valid");
+        input.nextElementSibling.innerHTML = rule.message;
+        input.nextElementSibling.style.color = "red";
         return false;
     } else {
-        showValidationSuccess(input);
+        input.classList.add("is-valid");
+        input.classList.remove("is-invalid");
+        input.nextElementSibling.innerHTML = "";
         return true;
     }
-}
-
-// Show validation error
-function showValidationError(input, message) {
-    input.classList.add("is-invalid");
-    input.classList.remove("is-valid");
-    input.nextElementSibling.innerHTML = message;
-    input.nextElementSibling.style.color = "red";
-}
-
-// Show validation success
-function showValidationSuccess(input) {
-    input.classList.add("is-valid");
-    input.classList.remove("is-invalid");
-    input.nextElementSibling.innerHTML = "";
-}
-
-// Reset validation
-function resetValidation(input) {
-    input.classList.remove("is-valid", "is-invalid");
-    input.nextElementSibling.innerHTML = "";
 }
